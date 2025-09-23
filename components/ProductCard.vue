@@ -47,14 +47,14 @@ const props = defineProps<Props>()
 
 const dateLabel = computed(() => formatMonthDay(props.product.createdAt))
 const cart = useCartStore()
-const { add: addToast } = useToasts()
+const { success } = useToasts()
 const { t } = useI18n()
 
 const imageError = ref(false)
 
 const addToCart = () => {
   cart.add(props.product, 1)
-  addToast({ variant: 'success', title: t('added'), description: t('inCart', props.product.name) })
+  success(t('added'), t('inCart', props.product.name))
 }
 
 const handleImageError = () => {

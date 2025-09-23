@@ -39,6 +39,7 @@ import { computed } from 'vue'
 import { useCartStore } from '@/stores/cart'
 import { useProductsStore } from '@/stores/products'
 import { useI18n } from '@/composables/useI18n'
+import { useToasts } from '@/composables/useToasts'
 
 // ensure products loaded so detailed can resolve product refs
 const productsStore = useProductsStore()
@@ -50,13 +51,43 @@ if (!productsStore.items.length) {
 }
 
 const cart = useCartStore()
+const { success, warning } = useToasts()
+const { t } = useI18n()
+
 const detailed = computed(() => cart.detailed)
 const totalItems = computed(() => cart.totalItems)
 const grandTotal = computed(() => cart.grandTotal)
 
-const updateQty = (productId: number, qty: number) => cart.setQty(productId, qty)
-const remove = (productId: number) => cart.remove(productId)
-const clear = () => cart.clear()
-const checkout = () => alert('Fluxo de checkout não implementado.')
-const { t } = useI18n()
+const updateQty = (productId: number, qty: number) => {
+  const product = detailed.value.find(item => item.productId === productId)
+  cart.setQty(productId, qty)
+  
+  if (qty === 0) {
+    warning('Item removido', `${product?.product?.name || 'Produto'} foi removido do carrinho`)
+  }
+}
+
+const remove = (productId: number) => {
+  const product = detailed.value.find(item => item.productId === productId)
+  cart.remove(productId)
+  warning('Item removido', `${product?.product?.name || 'Produto'} foi removido do carrinho`)
+}
+
+const clear = () => {
+  if (cart.totalItems > 0) {
+    cart.clear()
+    success('Carrinho limpo', 'Todos os itens foram removidos do carrinho')
+  }
+}
+
+const checkout = () => {
+  if (cart.totalItems === 0) {
+    warning('Carrinho vazio', 'Adicione produtos ao carrinho antes de finalizar')
+  } else {
+    success('Redirecionando...', 'Indo para a finalização da compra')
+    setTimeout(() => {
+      alert('Fluxo de checkout não implementado.')
+    }, 1000)
+  }
+}
 </script>
