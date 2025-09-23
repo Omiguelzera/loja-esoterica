@@ -24,10 +24,26 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { definePageMeta, useFetch } from '#imports'
 import type { Product } from '@/types/product'
-definePageMeta({ layout: 'dashboard' })
+
+definePageMeta({ 
+  layout: 'dashboard'
+})
+
+// Verificar autenticação no cliente
+onMounted(() => {
+  if (process.client) {
+    const isLoggedIn = 
+      localStorage.getItem('isLoggedIn') === 'true' || 
+      sessionStorage.getItem('isLoggedIn') === 'true'
+    
+    if (!isLoggedIn) {
+      window.location.href = '/'
+    }
+  }
+})
 const { data: products } = await useFetch<Product[]>('/api/products')
 const stats = computed(() => ({
   total: products.value?.length || 0,
