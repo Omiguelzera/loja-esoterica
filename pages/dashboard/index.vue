@@ -1,25 +1,21 @@
 <template>
-  <div class="space-y-6">
-    <h1 class="text-2xl font-bold tracking-tight">Visão Geral</h1>
-    <div class="grid gap-6 md:grid-cols-3">
-      <Card>
-        <div class="space-y-1">
-          <p class="text-sm text-muted-foreground">Produtos</p>
-          <p class="text-2xl font-semibold">{{ stats.total }}</p>
-        </div>
-      </Card>
-      <Card>
-        <div class="space-y-1">
-          <p class="text-sm text-muted-foreground">Categorias</p>
-          <p class="text-2xl font-semibold">{{ stats.categories }}</p>
-        </div>
-      </Card>
-      <Card>
-        <div class="space-y-1">
-          <p class="text-sm text-muted-foreground">Atualizado</p>
-          <p class="text-2xl font-semibold">Agora</p>
-        </div>
-      </Card>
+  <div>
+    <!-- Dashboard Admin -->
+    <AdminDashboard v-if="isAdmin" :stats="stats" />
+
+    <!-- Dashboard Cliente -->
+    <CustomerDashboard v-else-if="isCustomer" />
+
+    <!-- Acesso Negado -->
+    <div v-else class="text-center py-12">
+      <div class="space-y-4">
+        <div class="text-6xl">🚫</div>
+        <h1 class="text-2xl font-bold">Acesso Restrito</h1>
+        <p class="text-muted-foreground">Você não tem permissão para acessar esta área.</p>
+        <NuxtLink to="/">
+          <Button>Voltar ao Início</Button>
+        </NuxtLink>
+      </div>
     </div>
   </div>
 </template>
@@ -27,6 +23,9 @@
 import { computed, onMounted } from 'vue'
 import { definePageMeta, useFetch } from '#imports'
 import type { Product } from '@/types/product'
+import { useAuth } from '@/composables/useAuth'
+
+const { isAdmin, isCustomer } = useAuth()
 
 definePageMeta({ 
   layout: 'dashboard'

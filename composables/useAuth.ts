@@ -1,10 +1,12 @@
-import { ref, readonly, onMounted } from 'vue'
+import { ref, readonly, onMounted, computed } from 'vue'
 
 export interface User {
   id: string
   name: string
   email: string
-  role: string
+  role: 'admin' | 'customer'
+  permissions: string[]
+  avatar?: string
 }
 
 export const useAuth = () => {
@@ -65,6 +67,26 @@ export const useAuth = () => {
     sessionStorage.removeItem('isLoggedIn')
   }
 
+  // Verificar se usuário é admin
+  const isAdmin = computed(() => {
+    return user.value?.role === 'admin'
+  })
+
+  // Verificar se usuário é customer
+  const isCustomer = computed(() => {
+    return user.value?.role === 'customer'
+  })
+
+  // Verificar se usuário tem permissão específica
+  const hasPermission = (permission: string) => {
+    return user.value?.permissions?.includes(permission) || false
+  }
+
+  // Verificar se pode acessar dashboard
+  const canAccessDashboard = computed(() => {
+    return isAdmin.value && hasPermission('dashboard.view')
+  })
+
   // Verificar autenticação ao inicializar
   onMounted(() => {
     checkAuth()
@@ -73,8 +95,12 @@ export const useAuth = () => {
   return {
     isLoggedIn: readonly(isLoggedIn),
     user: readonly(user),
+    isAdmin: readonly(isAdmin),
+    isCustomer: readonly(isCustomer),
+    canAccessDashboard: readonly(canAccessDashboard),
     login,
     logout,
-    checkAuth
+    checkAuth,
+    hasPermission
   }
 }

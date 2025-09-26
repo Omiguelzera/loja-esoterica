@@ -13,7 +13,7 @@
         <div class="flex items-center justify-between">
           <CardTitle class="flex items-center gap-2">
             <LogIn class="w-5 h-5 text-primary" />
-            Fazer Login
+            Login
           </CardTitle>
           <Button 
             variant="ghost" 
@@ -25,7 +25,7 @@
           </Button>
         </div>
         <CardDescription>
-          Entre com suas credenciais para acessar o painel administrativo
+          Entre com suas credenciais para acessar sua conta.
         </CardDescription>
       </CardHeader>
 
@@ -124,25 +124,23 @@
 
       <CardFooter class="pt-0">
         <div class="w-full text-center space-y-2">
-          <p class="text-xs text-muted-foreground">
-            Não tem uma conta? 
-            <button 
-              type="button" 
-              class="text-primary hover:underline font-medium"
-              @click="showRegisterMode = true"
-              :disabled="isLoading"
-            >
-              Criar conta
-            </button>
-          </p>
           <div class="flex items-center gap-2 text-xs text-muted-foreground">
             <div class="h-px bg-border flex-1"></div>
-            <span>Demo</span>
+            <span>Contas Demo</span>
             <div class="h-px bg-border flex-1"></div>
           </div>
-          <p class="text-xs text-muted-foreground">
-            Use: <strong>admin@loja.com</strong> / <strong>admin123</strong>
-          </p>
+          <div class="text-xs text-muted-foreground space-y-2">
+            <div class="p-2 bg-muted/50 rounded-md">
+              <p class="font-medium text-foreground mb-1">🔧 Administradores:</p>
+              <p><strong>Admin Master:</strong> admin@loja.com / admin123</p>
+              <p><strong>Manager:</strong> joao@loja.com / manager123</p>
+            </div>
+            <div class="p-2 bg-muted/50 rounded-md">
+              <p class="font-medium text-foreground mb-1">👤 Clientes:</p>
+              <p><strong>Cliente VIP:</strong> miguel@email.com / 123456</p>
+              <p><strong>Cliente Regular:</strong> ana@email.com / 123456</p>
+            </div>
+          </div>
         </div>
       </CardFooter>
     </Card>
@@ -160,7 +158,9 @@ interface User {
   id: string
   name: string
   email: string
-  role: string
+  role: 'admin' | 'customer'
+  permissions: string[]
+  avatar?: string
 }
 
 interface Props {
@@ -187,6 +187,7 @@ import CardFooter from './ui/CardFooter.vue'
 import Input from './ui/Input.vue'
 import Button from './ui/Button.vue'
 import { useToasts } from '@/composables/useToasts'
+import { validateCredentials } from '@/lib/users'
 
 // Estado do formulário
 const form = ref<LoginForm>({
@@ -210,12 +211,6 @@ const isFormValid = computed(() => {
   return hasEmail && hasPassword
 })
 
-// Credenciais de demo
-const demoCredentials = {
-  email: 'admin@loja.com',
-  password: 'admin123'
-}
-
 // Função de login
 const handleLogin = async () => {
   if (!isFormValid.value) return
@@ -229,17 +224,18 @@ const handleLogin = async () => {
     // Simular delay de rede
     await new Promise(resolve => setTimeout(resolve, 1500))
     
-    // Verificar credenciais (em produção, seria uma chamada API)
-    if (
-      form.value.email === demoCredentials.email && 
-      form.value.password === demoCredentials.password
-    ) {
-      // Login bem-sucedido
+    // Verificar credenciais usando sistema de usuários
+    const userData = validateCredentials(form.value.email, form.value.password)
+    
+    if (userData) {
+      // Login bem-sucedido - converter para formato User
       const user: User = {
-        id: '1',
-        name: 'Administrador',
-        email: form.value.email,
-        role: 'admin'
+        id: userData.id,
+        name: userData.name,
+        email: userData.email,
+        role: userData.role,
+        permissions: userData.permissions,
+        avatar: userData.avatar
       }
       
       // Salvar no localStorage se "lembrar de mim" estiver marcado
@@ -251,12 +247,17 @@ const handleLogin = async () => {
         sessionStorage.setItem('isLoggedIn', 'true')
       }
       
+      // Mensagem baseada no role do usuário
+      const roleMessage = user.role === 'admin' 
+        ? `Bem-vindo ao painel administrativo, ${user.name}!`
+        : `Bem-vindo à loja, ${user.name}!`
+      
       // Atualizar toast para sucesso
       updateToast(toastId, {
         title: 'Login realizado!',
-        description: `Bem-vindo, ${user.name}`,
+        description: roleMessage,
         variant: 'success',
-        duration: 2000
+        duration: 3000
       })
       
       // Emitir evento de login bem-sucedido
@@ -270,7 +271,7 @@ const handleLogin = async () => {
       // Credenciais inválidas
       updateToast(toastId, {
         title: 'Erro no login',
-        description: 'Email ou senha incorretos. Tente: admin@loja.com / admin123',
+        description: 'Email ou senha incorretos. Verifique suas credenciais.',
         variant: 'error',
         duration: 5000
       })

@@ -14,25 +14,21 @@
             🛒 Ir ao Carrinho
           </Button>
         </NuxtLink>
+        <Button 
+          v-if="!isLoggedIn" 
+          @click="showLoginModal = true" 
+          variant="secondary" 
+          size="lg" 
+          class="font-semibold"
+        >
+          <LogIn class="w-4 h-4 mr-2" />
+          Login
+        </Button>
         <NuxtLink v-if="isLoggedIn" to="/dashboard">
           <Button variant="secondary" size="lg" class="font-semibold">
-            ⚙️ Painel Admin
+            ⚙️ Dashboard
           </Button>
         </NuxtLink>
-      </div>
-      
-      <!-- Seção de Login para Admin -->
-      <div v-if="!isLoggedIn" class="mt-8 p-6 bg-muted/50 rounded-lg border border-dashed border-muted-foreground/20 max-w-md mx-auto">
-        <div class="text-center space-y-3">
-          <h3 class="font-semibold text-lg">Área Administrativa</h3>
-          <p class="text-sm text-muted-foreground">
-            Faça login para acessar o painel de administração
-          </p>
-          <Button @click="showLoginModal = true" class="w-full">
-            <LogIn class="w-4 h-4 mr-2" />
-            Fazer Login
-          </Button>
-        </div>
       </div>
       
       <!-- Modal de Login -->
