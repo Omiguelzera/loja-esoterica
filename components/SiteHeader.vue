@@ -11,7 +11,19 @@
         <NuxtLink to="/categorias/tarot" class="hover:text-primary transition-colors">Tarot</NuxtLink>
       </nav>
       <div class="ml-auto flex items-center gap-3">
-        <ThemeToggle />
+        <!-- Theme Toggle -->
+        <button
+          @click="toggleTheme"
+          class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 hover:bg-gray-100 dark:hover:bg-slate-800 h-9 w-9"
+          :aria-label="themeLabel"
+        >
+          <svg v-if="isDark" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg v-else class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
         <Button size="sm" variant="outline" @click="toggleLocale" class="text-xs w-10" aria-label="Mudar idioma">{{ locale === 'pt' ? 'EN' : 'PT' }}</Button>
         <NuxtLink to="/carrinho" class="relative inline-flex items-center" aria-label="Ir para carrinho de compras">
           <div class="flex items-center gap-1 text-sm font-medium">
@@ -30,8 +42,13 @@
 import { computed } from 'vue'
 import { useCartStore } from '@/stores/cart'
 import { useI18n } from '@/composables/useI18n'
+import { useTheme } from '@/composables/useTheme'
+
 const cart = useCartStore()
 const totalItems = computed(() => cart.totalItems)
 const { t, locale, setLocale } = useI18n()
+const { isDark, toggleTheme } = useTheme()
+
+const themeLabel = computed(() => isDark.value ? 'Mudar para modo claro' : 'Mudar para modo escuro')
 const toggleLocale = () => setLocale(locale.value === 'pt' ? 'en' : 'pt')
 </script>
