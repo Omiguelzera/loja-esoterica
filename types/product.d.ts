@@ -5,13 +5,17 @@ export interface Product {
   price: number
   createdAt: string
   category: string
-  // Campos de imagem
+  // Sistema de imagens múltiplas
+  images: ProductImage[]
+  // Compatibilidade com sistema antigo
   imageUrl?: string
   thumbnailUrl?: string
-  images?: {
-    thumbnail: string
-    card: string
-    detail: string
-    hero: string
-  }
+}
+
+export interface ProductImage {
+  id: string
+  url: string
+  alt: string
+  isPrimary: boolean
+  order: number
 }
