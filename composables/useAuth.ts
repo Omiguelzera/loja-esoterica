@@ -42,29 +42,38 @@ export const useAuth = () => {
     return false
   }
 
-  // Função de login
+  // Função de login melhorada
   const login = (userData: User, rememberMe = false) => {
     user.value = userData
     isLoggedIn.value = true
     
+    const storage = rememberMe ? localStorage : sessionStorage
+    const otherStorage = rememberMe ? sessionStorage : localStorage
+    
     // Salvar no storage apropriado
-    if (rememberMe) {
-      localStorage.setItem('user', JSON.stringify(userData))
-      localStorage.setItem('isLoggedIn', 'true')
-    } else {
-      sessionStorage.setItem('user', JSON.stringify(userData))
-      sessionStorage.setItem('isLoggedIn', 'true')
-    }
+    storage.setItem('user', JSON.stringify(userData))
+    storage.setItem('isLoggedIn', 'true')
+    storage.setItem('loginTimestamp', Date.now().toString())
+    storage.setItem('rememberMe', rememberMe.toString())
+    
+    // Limpar dados do outro storage para evitar conflitos
+    otherStorage.removeItem('user')
+    otherStorage.removeItem('isLoggedIn')
+    otherStorage.removeItem('loginTimestamp')
+    otherStorage.removeItem('rememberMe')
   }
 
-  // Função de logout
+  // Função de logout melhorada
   const logout = () => {
     isLoggedIn.value = false
     user.value = null
-    localStorage.removeItem('user')
-    localStorage.removeItem('isLoggedIn')
-    sessionStorage.removeItem('user')
-    sessionStorage.removeItem('isLoggedIn')
+    
+    // Limpar todos os dados de autenticação de ambos os storages
+    const storageKeys = ['user', 'isLoggedIn', 'loginTimestamp', 'rememberMe']
+    storageKeys.forEach(key => {
+      localStorage.removeItem(key)
+      sessionStorage.removeItem(key)
+    })
   }
 
   // Verificar se usuário é admin
