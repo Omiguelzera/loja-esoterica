@@ -1,6 +1,16 @@
 <template>
-  <header class="border-b border-border/60 backdrop-blur supports-[backdrop-filter]:bg-background/70 sticky top-0 z-40">
+  <header class="border-b border-gray-200 dark:border-slate-700 backdrop-blur bg-white/70 dark:bg-slate-900/70 sticky top-0 z-40">
     <div class="container mx-auto flex items-center h-14 gap-4">
+      <!-- Botão Menu Mobile -->
+      <button 
+        @click="toggleSidebar"
+        class="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+        aria-label="Abrir menu"
+      >
+        <svg class="w-5 h-5 text-gray-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
       <NuxtLink to="/" class="font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 rounded px-1 -ml-1">
         <span class="text-lg">🔮 {{ t('storeName') }}</span>
       </NuxtLink>
@@ -28,6 +38,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+
+const { toggle: toggleSidebar } = useSidebar()
 import { useCartStore } from '@/stores/cart'
 import { useI18n } from '@/composables/useI18n'
 const cart = useCartStore()
