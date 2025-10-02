@@ -11,7 +11,7 @@
     </div>
 
     <!-- Estatísticas -->
-    <div class="grid gap-6 md:grid-cols-4">
+    <div class="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
       <Card>
         <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle class="text-sm font-medium">Produtos Total</CardTitle>
@@ -67,10 +67,10 @@
     </div>
 
     <!-- Ações Rápidas Admin -->
-    <div class="grid gap-6 md:grid-cols-2">
+    <div class="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle class="flex items-center gap-2">
+          <CardTitle class="flex items-center gap-2 text-lg sm:text-xl">
             <Settings class="w-5 h-5" />
             Ações Administrativas
           </CardTitle>
@@ -79,7 +79,7 @@
           </CardDescription>
         </CardHeader>
         <CardContent class="space-y-3">
-          <NuxtLink to="/dashboard/products">
+          <NuxtLink to="/dashboard/produtos">
             <Button class="w-full justify-start" variant="outline">
               <Package class="w-4 h-4 mr-2" />
               Gerenciar Produtos
