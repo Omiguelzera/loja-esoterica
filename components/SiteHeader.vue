@@ -42,6 +42,7 @@ import { computed } from 'vue'
 const { toggle: toggleSidebar } = useSidebar()
 import { useCartStore } from '@/stores/cart'
 import { useI18n } from '@/composables/useI18n'
+import { useSidebar } from '@/composables/useSidebar'
 const cart = useCartStore()
 const totalItems = computed(() => cart.totalItems)
 const { t, locale, setLocale } = useI18n()
