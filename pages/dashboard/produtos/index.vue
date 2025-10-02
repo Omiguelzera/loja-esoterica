@@ -21,6 +21,9 @@
 <script setup lang="ts">
 import type { Product } from '@/types/product'
 
-definePageMeta({ layout: 'dashboard' })
+// Layout padrão será usado automaticamente
+definePageMeta({
+  middleware: 'admin'
+})
 const { data: products } = await useFetch<Product[]>('/api/products')
 </script>

@@ -45,7 +45,10 @@ import { useForm } from 'vee-validate'
 import { object, string, number } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 
-definePageMeta({ layout: 'dashboard' })
+// Layout padrão será usado automaticamente
+definePageMeta({
+  middleware: 'admin'
+})
 
 // Schema de validação
 const schema = toTypedSchema(object({

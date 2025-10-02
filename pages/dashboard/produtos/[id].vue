@@ -46,7 +46,10 @@ import { object, string } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import type { Product } from '@/types/product'
 
-definePageMeta({ layout: 'dashboard' })
+// Layout padrão será usado automaticamente
+definePageMeta({
+  middleware: 'admin'
+})
 
 const route = useRoute()
 const id = Number(route.params.id)

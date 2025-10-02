@@ -5,5 +5,8 @@
   </div>
 </template>
 <script setup lang="ts">
-definePageMeta({ layout: 'dashboard' })
+// Layout padrão será usado automaticamente
+definePageMeta({
+  middleware: 'admin'
+})
 </script>
