@@ -76,11 +76,17 @@
 }
 
 @layer components {
-  .container-responsive { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+  .container-responsive { 
+    @apply w-full mx-auto px-4 sm:px-6 lg:px-8; 
+  }
 }
 
 @layer utilities {
   .theme-transition * { 
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  .layout-transition {
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
 }
