@@ -1,6 +1,14 @@
 import { defineEventHandler, getQuery } from 'h3'
 import { getProductImageVariations } from '../../lib/product-images.js'
 
+interface ProductImage {
+  id: string
+  url: string
+  alt: string
+  isPrimary: boolean
+  order: number
+}
+
 interface Product {
   id: number
   name: string
@@ -8,14 +16,10 @@ interface Product {
   price: number
   createdAt: string
   category: string
+  images: ProductImage[]
+  // Compatibilidade com sistema antigo
   imageUrl?: string
   thumbnailUrl?: string
-  images?: {
-    thumbnail: string
-    card: string
-    detail: string
-    hero: string
-  }
 }
 
 const baseProducts = [
@@ -31,14 +35,53 @@ const baseProducts = [
   { id: 10, name: 'Livro Runas', description: 'Guia completo sobre simbolos rúnicos.', price: 65.0, createdAt: new Date().toISOString(), category: 'livros' }
 ]
 
+// Função para criar imagens mock no novo formato
+const createProductImages = (productId: number, productName: string): ProductImage[] => {
+  const baseUrl = `https://picsum.photos/seed/${productId}`
+  
+  return [
+    {
+      id: `${productId}_main`,
+      url: `${baseUrl}/600/600`,
+      alt: `${productName} - Imagem principal`,
+      isPrimary: true,
+      order: 0
+    },
+    {
+      id: `${productId}_2`,
+      url: `${baseUrl}2/600/600`,
+      alt: `${productName} - Detalhe 1`,
+      isPrimary: false,
+      order: 1
+    },
+    {
+      id: `${productId}_3`,
+      url: `${baseUrl}3/600/600`,
+      alt: `${productName} - Detalhe 2`,
+      isPrimary: false,
+      order: 2
+    },
+    {
+      id: `${productId}_4`,
+      url: `${baseUrl}4/600/600`,
+      alt: `${productName} - Uso`,
+      isPrimary: false,
+      order: 3
+    }
+  ]
+}
+
 // Adicionar imagens aos produtos
 const products: Product[] = baseProducts.map(product => {
-  const images = getProductImageVariations(product.id, product.category, product.name)
+  const productImages = createProductImages(product.id, product.name)
+  const oldImages = getProductImageVariations(product.id, product.category, product.name)
+  
   return {
     ...product,
-    imageUrl: images.card,
-    thumbnailUrl: images.thumbnail,
-    images
+    images: productImages,
+    // Compatibilidade com sistema antigo
+    imageUrl: oldImages.card,
+    thumbnailUrl: oldImages.thumbnail
   }
 })
 
