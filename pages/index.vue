@@ -14,29 +14,9 @@
             🛒 Ir ao Carrinho
           </Button>
         </NuxtLink>
-        <Button 
-          v-if="!isLoggedIn" 
-          @click="showLoginModal = true" 
-          variant="secondary" 
-          size="lg" 
-          class="font-semibold"
-        >
-          <LogIn class="w-4 h-4 mr-2" />
-          Login
-        </Button>
-        <NuxtLink v-if="isLoggedIn" to="/dashboard">
-          <Button variant="secondary" size="lg" class="font-semibold">
-            ⚙️ Dashboard
-          </Button>
-        </NuxtLink>
       </div>
       
-      <!-- Modal de Login -->
-      <LoginModal 
-        :is-open="showLoginModal"
-        @close="showLoginModal = false"
-        @login="handleLoginSuccess"
-      />
+
     </section>
 
     <section>
@@ -69,24 +49,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
-import { LogIn } from 'lucide-vue-next'
 import type { Product } from '@/types/product'
-import LoginModal from '@/components/LoginModal.vue'
-import { useAuth, type User } from '@/composables/useAuth'
 
 const { data: products, pending } = useFetch<Product[]>('/api/products?limit=8')
-
-// Estado de autenticação usando composable
-const { isLoggedIn, login } = useAuth()
-const showLoginModal = ref(false)
-
-// Função de login bem-sucedido
-const handleLoginSuccess = (user: User) => {
-  login(user, true) // true para lembrar do login
-  // Redirecionar para dashboard após login
-  if (process.client) {
-    window.location.href = '/dashboard'
-  }
-}
 </script>

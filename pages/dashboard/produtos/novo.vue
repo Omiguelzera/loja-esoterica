@@ -271,7 +271,10 @@ import { object, string, number } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
 import type { ProductImage } from '@/types/product'
 
-definePageMeta({ layout: 'dashboard' })
+// Layout padrão será usado automaticamente
+definePageMeta({
+  middleware: 'admin'
+})
 
 // Schema de validação
 const schema = toTypedSchema(object({

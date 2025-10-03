@@ -20,27 +20,30 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import { definePageMeta, useFetch } from '#imports'
+import { computed, onMounted, nextTick } from 'vue'
+import { useFetch } from '#imports'
 import type { Product } from '@/types/product'
 import { useAuth } from '@/composables/useAuth'
 
-const { isAdmin, isCustomer } = useAuth()
+const { isAdmin, isCustomer, isLoggedIn, checkAuth } = useAuth()
 
-definePageMeta({ 
-  layout: 'dashboard'
+// Layout padrão será usado automaticamente
+definePageMeta({
+  middleware: 'admin'
 })
 
-// Verificar autenticação no cliente
+// Verificar autenticação e permissão de admin
 onMounted(() => {
   if (process.client) {
-    const isLoggedIn = 
-      localStorage.getItem('isLoggedIn') === 'true' || 
-      sessionStorage.getItem('isLoggedIn') === 'true'
+    // Primeiro carrega os dados de autenticação
+    checkAuth()
     
-    if (!isLoggedIn) {
-      window.location.href = '/'
-    }
+    // Depois verifica se tem permissão para acessar dashboard
+    nextTick(() => {
+      if (!isLoggedIn.value || !isAdmin.value) {
+        window.location.href = '/'
+      }
+    })
   }
 })
 const { data: products } = await useFetch<Product[]>('/api/products')

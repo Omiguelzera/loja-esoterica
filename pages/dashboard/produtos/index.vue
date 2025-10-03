@@ -355,9 +355,9 @@ const clearFilters = () => {
   selectedCategory.value = ''
 }
 
-// Meta da página
+// Meta da página - usando layout padrão com middleware admin
 definePageMeta({
-  layout: 'dashboard'
+  middleware: 'admin'
 })
 
 useHead({

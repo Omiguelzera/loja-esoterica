@@ -356,7 +356,10 @@ import {
 } from 'lucide-vue-next'
 import type { Product, ProductImage } from '@/types/product'
 
-definePageMeta({ layout: 'dashboard' })
+// Layout padrão será usado automaticamente
+definePageMeta({
+  middleware: 'admin'
+})
 
 const route = useRoute()
 const id = Number(route.params.id)

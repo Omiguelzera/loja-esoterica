@@ -9,21 +9,21 @@
     </div>
     
     <!-- Cards de estatísticas do cliente -->
-    <div class="grid gap-6 md:grid-cols-3">
+    <div class="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-3">
       <Card>
-        <div class="p-6 space-y-1">
+        <div class="p-4 sm:p-6 space-y-1">
           <p class="text-sm text-muted-foreground">Pedidos Realizados</p>
           <p class="text-2xl font-semibold">{{ stats.orders }}</p>
         </div>
       </Card>
       <Card>
-        <div class="p-6 space-y-1">
+        <div class="p-4 sm:p-6 space-y-1">
           <p class="text-sm text-muted-foreground">Produtos Favoritos</p>
           <p class="text-2xl font-semibold">{{ stats.favorites }}</p>
         </div>
       </Card>
       <Card>
-        <div class="p-6 space-y-1">
+        <div class="p-4 sm:p-6 space-y-1">
           <p class="text-sm text-muted-foreground">Total Gasto</p>
           <p class="text-2xl font-semibold">R$ {{ stats.totalSpent.toFixed(2) }}</p>
         </div>
@@ -31,7 +31,7 @@
     </div>
 
     <!-- Seções do cliente -->
-    <div class="grid gap-6 md:grid-cols-2">
+    <div class="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2">
       <!-- Pedidos Recentes -->
       <Card>
         <div class="p-6">
