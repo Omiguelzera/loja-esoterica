@@ -354,8 +354,6 @@ const clearFilters = () => {
   searchQuery.value = ''
   selectedCategory.value = ''
 }
-
-// Meta da página - usando middleware admin
 definePageMeta({
   middleware: 'admin'
 })

@@ -56,6 +56,8 @@ import { useCartStore } from '@/stores/cart'
 import { useI18n } from '@/composables/useI18n'
 import { useSidebar } from '@/composables/useSidebar'
 import { useTheme } from '@/composables/useTheme'
+
+
 const cart = useCartStore()
 const totalItems = computed(() => cart.totalItems)
 const { t, locale, setLocale } = useI18n()
