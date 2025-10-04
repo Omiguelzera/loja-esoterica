@@ -1,0 +1,301 @@
+/* Estilos Híbridos Profissional-Místico */
+
+/* Efeitos de Brilho Sutil */
+.subtle-glow {
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(99, 102, 241, 0.05);
+}
+
+.dark .subtle-glow {
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -2px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(139, 92, 246, 0.1);
+}
+
+.magic-glow-hover:hover {
+  box-shadow: 
+    0 8px 25px -5px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(99, 102, 241, 0.1),
+    0 0 20px rgba(99, 102, 241, 0.05);
+  transform: translateY(-1px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .magic-glow-hover:hover {
+  box-shadow: 
+    0 8px 25px -5px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(139, 92, 246, 0.2),
+    0 0 20px rgba(139, 92, 246, 0.1);
+}
+
+/* Bordas Elegantes com Toque Místico */
+.elegant-border {
+  border: 1px solid rgb(229 231 235);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.dark .elegant-border {
+  border-color: rgb(55 65 81);
+}
+
+.elegant-border:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
+.dark .elegant-border:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.1);
+}
+
+/* Bordas Místicas Sutis */
+.mystic-border {
+  border: 1px solid transparent;
+  background: 
+    linear-gradient(rgb(255 255 255), rgb(255 255 255)) padding-box,
+    linear-gradient(45deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.15)) border-box;
+  border-radius: 12px;
+  position: relative;
+}
+
+.dark .mystic-border {
+  background: 
+    linear-gradient(rgb(31 41 55), rgb(31 41 55)) padding-box,
+    linear-gradient(45deg, rgba(139, 92, 246, 0.3), rgba(99, 102, 241, 0.2)) border-box;
+}
+
+/* Bordas Cristalinas Refinadas */
+.crystal-border {
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  box-shadow: 
+    0 2px 8px 0 rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.dark .crystal-border {
+  border-color: rgba(139, 92, 246, 0.2);
+  box-shadow: 
+    0 2px 8px 0 rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Efeitos de Brilho Mágico */
+.magic-glow {
+  box-shadow: 
+    0 0 20px rgba(99, 102, 241, 0.3),
+    0 0 40px rgba(139, 92, 246, 0.2),
+    0 0 60px rgba(6, 182, 212, 0.1);
+}
+
+.magic-glow-hover:hover {
+  box-shadow: 
+    0 0 25px rgba(99, 102, 241, 0.4),
+    0 0 50px rgba(139, 92, 246, 0.3),
+    0 0 75px rgba(6, 182, 212, 0.2);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* Botões Elegantes com Toque Místico */
+.mystic-button {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  box-shadow: 
+    0 2px 4px 0 rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mystic-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 12px 0 rgba(99, 102, 241, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.mystic-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.mystic-button:hover::before {
+  left: 100%;
+}
+
+/* Cards Elegantes */
+.mystic-card {
+  border-radius: 12px;
+  background: rgb(255 255 255);
+  border: 1px solid rgb(229 231 235);
+  box-shadow: 
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.dark .mystic-card {
+  background: rgb(31 41 55);
+  border-color: rgb(55 65 81);
+  box-shadow: 
+    0 1px 3px 0 rgba(0, 0, 0, 0.3),
+    0 1px 2px -1px rgba(0, 0, 0, 0.3);
+}
+
+.mystic-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
+.dark .mystic-card:hover {
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.4),
+    0 2px 4px -2px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(139, 92, 246, 0.2);
+}
+
+/* Gradientes Mágicos */
+.magic-gradient {
+  background: linear-gradient(135deg, 
+    rgba(99, 102, 241, 0.1) 0%, 
+    rgba(139, 92, 246, 0.1) 25%, 
+    rgba(6, 182, 212, 0.1) 50%, 
+    rgba(16, 185, 129, 0.1) 75%, 
+    rgba(99, 102, 241, 0.1) 100%);
+}
+
+.magic-gradient-dark {
+  background: linear-gradient(135deg, 
+    rgba(99, 102, 241, 0.05) 0%, 
+    rgba(139, 92, 246, 0.05) 25%, 
+    rgba(6, 182, 212, 0.05) 50%, 
+    rgba(16, 185, 129, 0.05) 75%, 
+    rgba(99, 102, 241, 0.05) 100%);
+}
+
+/* Animações Místicas */
+@keyframes mystical-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+  }
+}
+
+.mystic-pulse {
+  animation: mystical-pulse 2s ease-in-out infinite;
+}
+
+@keyframes floating {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.mystic-float {
+  animation: floating 3s ease-in-out infinite;
+}
+
+/* Scrollbar Místico */
+.mystic-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mystic-scrollbar::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.1);
+  border-radius: 10px;
+}
+
+.mystic-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #6366f1, #8b5cf6);
+  border-radius: 10px;
+  border: 2px solid transparent;
+}
+
+.mystic-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #8b5cf6, #06b6d4);
+}
+
+/* Responsividade Mística */
+@media (max-width: 640px) {
+  .mystic-border, .mystic-border-dark {
+    border-radius: 8px;
+  }
+  
+  .crystal-border, .crystal-border-dark {
+    border-radius: 12px;
+  }
+  
+  .mystic-card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+  
+  .mystic-button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mystic-border, .mystic-border-dark {
+    border-radius: 16px;
+  }
+  
+  .crystal-border, .crystal-border-dark {
+    border-radius: 20px;
+  }
+}
+
+/* Efeitos Especiais para Links */
+.mystic-link {
+  position: relative;
+  color: #6366f1;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.mystic-link:hover {
+  color: #8b5cf6;
+  text-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+}
+
+.mystic-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 50%;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4);
+  transition: all 0.3s ease;
+}
+
+.mystic-link:hover::after {
+  width: 100%;
+  left: 0;
+}

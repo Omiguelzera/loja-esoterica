@@ -3,9 +3,10 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
+  compatibilityDate: '2025-10-04',
   devtools: { enabled: true },
   typescript: { strict: true, typeCheck: false },
-  css: ['@/assets/css/tailwind.css'],
+  css: ['@/assets/css/tailwind.css', '@/assets/css/mystic.css'],
   ssr: true, // Importante para Vercel
   nitro: {
     preset: 'vercel-edge', // Configuração específica para Vercel
