@@ -1,44 +1,30 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 dark:from-slate-900 dark:to-slate-800/50 theme-transition">
-    <!-- Sidebar Persistente -->
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-800/50 dark:to-slate-900">
+    <SiteHeader />
+    
+    <!-- Sidebar -->
     <PersistentSidebar />
     
-    <!-- Layout Principal -->
-    <div 
-      class="fixed top-0 flex flex-col min-h-screen"
+    <!-- Main Content -->
+    <main 
+      class="transition-all duration-300 ease-in-out"
       :style="{
-        left: isMobile ? '0' : (isOpen ? '320px' : '64px'),
-        right: '0',
-        transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        zIndex: 10
+        marginLeft: isMobile ? '0' : (isOpen ? '20rem' : '4rem'),
+        minHeight: 'calc(100vh - 4rem)', // Altura mínima considerando o header
+        paddingTop: '1rem',
+        paddingBottom: '1rem',
+        overflow: 'auto' // Garantir que pode fazer scroll
       }"
     >
-      <SiteHeader />
-      <main 
-        class="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 overflow-x-hidden"
-        :style="{
-          transition: 'all 0.3s ease-in-out',
-          width: '100%'
-        }"
-      >
-        <div 
-          class="w-full"
-          :style="{
-            transition: 'all 0.3s ease-in-out'
-          }"
-        >
-          <slot />
-        </div>
-      </main>
-      <SiteFooter />
-    </div>
-    
-    <ToastContainer />
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <slot />
+      </div>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useSidebar } from '@/composables/useSidebar'
+import { useSidebar } from '@/composables/useSidebar';
 
 const { isOpen, isMobile } = useSidebar()
 </script>
