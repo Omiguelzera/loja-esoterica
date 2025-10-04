@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@nuxtjs/color-mode": "^3.5.1",
+    "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
     "@pinia/nuxt": "^0.5.1",
     "@vee-validate/rules": "^4.12.6",
     "@vee-validate/zod": "^4.15.1",
