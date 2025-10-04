@@ -14,7 +14,7 @@
   "dependencies": {
     "@nuxtjs/color-mode": "^3.5.1",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
-    "@pinia/nuxt": "^0.5.1",
+    "@pinia/nuxt": "^0.5.5",
     "@vee-validate/rules": "^4.12.6",
     "@vee-validate/zod": "^4.15.1",
     "@vueuse/core": "^10.9.0",
@@ -22,22 +22,27 @@
     "date-fns": "^3.6.0",
     "lucide-vue-next": "^0.424.0",
     "nuxt": "^3.13.0",
-    "pinia": "^2.1.7",
+    "pinia": "^2.2.2",
     "radix-vue": "^1.8.3",
     "undici": "^7.16.0",
     "vee-validate": "^4.12.6",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^20.11.30",
+    "@types/node": "^20.16.0",
     "@vue/test-utils": "^2.4.6",
-    "autoprefixer": "^10.4.19",
+    "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
-    "eslint-plugin-vue": "^9.25.0",
-    "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.3",
-    "typescript": "^5.4.5",
+    "eslint-plugin-vue": "^9.27.0",
+    "postcss": "^8.4.45",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4",
     "vitest": "^2.0.5",
     "vue-tsc": "^3.0.7"
+  },
+  "overrides": {
+    "pinia-plugin-persistedstate": {
+      "@pinia/nuxt": "^0.5.5"
+    }
   }
 }
