@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { $fetch } from 'ofetch'
 
 
 export interface Product {
@@ -28,7 +27,27 @@ export const useProductsStore = defineStore('products', {
       if (this.loading) return
       this.loading = true
       try {
-        const data = await $fetch<Product[]>('/api/products')
+        // Tentar buscar da API, se falhar usar dados mock
+        let data: Product[]
+        try {
+          // Usar fetch nativo do navegador com URL absoluta em desenvolvimento
+          const response = await fetch('/api/products')
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
+          data = await response.json()
+        } catch (error) {
+          console.warn('Falha ao carregar da API, usando dados mock:', error)
+          // Dados mock para fallback
+          data = [
+            { id: 1, name: 'Cristal Quartzo', description: 'Pedra de cura e amplificação energética.', price: 49.9, createdAt: new Date().toISOString(), category: 'cristais' },
+            { id: 2, name: 'Incenso Sândalo', description: 'Aroma suave para limpeza energética.', price: 19.9, createdAt: new Date().toISOString(), category: 'incensos' },
+            { id: 3, name: 'Baralho Tarot Rider', description: 'Clássico baralho de Tarot para leituras.', price: 89.0, createdAt: new Date().toISOString(), category: 'tarot' },
+            { id: 4, name: 'Pingente Ametista', description: 'Ametista para proteção e espiritualidade.', price: 59.0, createdAt: new Date().toISOString(), category: 'cristais' },
+            { id: 5, name: 'Incenso Lavanda', description: 'Calmante e relaxante para o ambiente.', price: 17.5, createdAt: new Date().toISOString(), category: 'incensos' }
+          ]
+        }
+        
         if (data) {
           this.items = data
           this.loaded = true
