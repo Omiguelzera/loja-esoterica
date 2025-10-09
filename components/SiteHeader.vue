@@ -64,24 +64,136 @@
             </span>
           </div>
         </NuxtLink>
+
+        <!-- Menu do usuário -->
+        <div class="relative" v-if="isLoggedIn">
+          <button
+            @click="showUserMenu = !showUserMenu"
+            class="crystal-border magic-glow-hover flex items-center space-x-2 px-2 sm:px-3 py-1 sm:py-2 rounded-lg transition-all duration-300 group"
+            :class="{ 'magic-glow': showUserMenu }"
+          >
+            <img
+              :src="user?.avatar || '/avatars/default.jpg'"
+              :alt="user?.name"
+              class="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover border border-purple-400"
+            />
+            <span class="hidden md:inline text-xs sm:text-sm font-medium text-slate-200 group-hover:text-white">
+              {{ user?.name?.split(' ')[0] }}
+            </span>
+            <Icon name="heroicons:chevron-down" 
+                  class="h-3 w-3 text-slate-400 transition-transform duration-200"
+                  :class="{ 'rotate-180': showUserMenu }" />
+          </button>
+
+          <!-- Dropdown menu -->
+          <div v-if="showUserMenu" 
+               class="absolute right-0 mt-2 w-48 crystal-border rounded-lg shadow-lg py-2 z-50"
+               style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%); backdrop-filter: blur(15px);">
+            <NuxtLink to="/minha-conta" 
+                      @click="showUserMenu = false"
+                      class="flex items-center px-4 py-2 text-sm text-slate-200 hover:text-white hover:magic-glow transition-all">
+              <Icon name="heroicons:user-circle" class="h-4 w-4 mr-3 text-purple-400" />
+              Minha Conta
+            </NuxtLink>
+            
+            <NuxtLink v-if="user?.role === 'customer'" 
+                      to="/pedidos" 
+                      @click="showUserMenu = false"
+                      class="flex items-center px-4 py-2 text-sm text-slate-200 hover:text-white hover:magic-glow transition-all">
+              <Icon name="heroicons:shopping-bag" class="h-4 w-4 mr-3 text-blue-400" />
+              Meus Pedidos
+            </NuxtLink>
+            
+            <NuxtLink v-if="user?.role === 'admin'" 
+                      to="/dashboard" 
+                      @click="showUserMenu = false"
+                      class="flex items-center px-4 py-2 text-sm text-slate-200 hover:text-white hover:magic-glow transition-all">
+              <Icon name="heroicons:squares-2x2" class="h-4 w-4 mr-3 text-purple-400" />
+              Dashboard Admin
+            </NuxtLink>
+            
+            <NuxtLink to="/perfil/editar" 
+                      @click="showUserMenu = false"
+                      class="flex items-center px-4 py-2 text-sm text-slate-200 hover:text-white hover:magic-glow transition-all">
+              <Icon name="heroicons:cog-6-tooth" class="h-4 w-4 mr-3 text-gray-400" />
+              Configurações
+            </NuxtLink>
+            
+            <hr class="my-2 border-slate-600" />
+            
+            <button @click="handleLogout" 
+                    class="flex items-center w-full px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:magic-glow transition-all">
+              <Icon name="heroicons:arrow-right-on-rectangle" class="h-4 w-4 mr-3" />
+              Sair
+            </button>
+          </div>
+        </div>
+
+        <!-- Botão de login (se não estiver logado) -->
+        <NuxtLink v-else 
+                  to="/auth/login"
+                  class="crystal-border magic-glow-hover flex items-center space-x-2 px-2 sm:px-3 py-1 sm:py-2 rounded-lg transition-all duration-300 group">
+          <Icon name="heroicons:user-circle" class="h-4 w-4 text-purple-400 group-hover:text-purple-300" />
+          <span class="hidden sm:inline text-xs sm:text-sm font-medium text-slate-200 group-hover:text-white">
+            Entrar
+          </span>
+        </NuxtLink>
       </div>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
 import { useI18n } from '@/composables/useI18n'
 import { useTheme } from '@/composables/useTheme'
 import { useSidebar } from '@/composables/useSidebar'
+import { useAuth } from '@/composables/useAuth'
+import { useToasts } from '@/composables/useToasts'
 
+const router = useRouter()
 const cart = useCartStore()
 const totalItems = computed(() => cart.totalItems)
 const { t, locale, setLocale } = useI18n()
 const { isDark, toggleTheme } = useTheme()
 const { sidebarWidth } = useSidebar()
+const { isLoggedIn, user, logout } = useAuth()
+const { success: showSuccessToast } = useToasts()
+
+// Estado local
+const showUserMenu = ref(false)
 
 const themeLabel = computed(() => isDark.value ? 'Mudar para modo claro' : 'Mudar para modo escuro')
 const toggleLocale = () => setLocale(locale.value === 'pt' ? 'en' : 'pt')
+
+// Handler para logout
+const handleLogout = async () => {
+  logout()
+  showUserMenu.value = false
+  
+  showSuccessToast(
+    'Logout realizado',
+    'Você foi desconectado com sucesso'
+  )
+  
+  await router.push('/')
+}
+
+// Fechar menu ao clicar fora
+const handleClickOutside = (event: Event) => {
+  const target = event.target as HTMLElement
+  if (!target.closest('.relative')) {
+    showUserMenu.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
