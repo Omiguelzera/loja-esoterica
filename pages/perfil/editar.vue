@@ -23,7 +23,7 @@
         <div class="flex items-center space-x-6">
           <div class="relative">
             <img
-              :src="form.avatar || user?.avatar || '/avatars/default.jpg'"
+              :src="form.avatar || user?.avatar || '/avatars/default.svg'"
               :alt="form.name"
               class="w-20 h-20 rounded-full object-cover elegant-border"
             />

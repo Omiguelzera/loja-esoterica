@@ -64,7 +64,7 @@
           </h3>
           <nav class="space-y-2 mb-6">
             <NuxtLink 
-              to="/conta" 
+              to="/minha-conta" 
               class="elegant-border flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-xl group hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
               <svg class="w-5 h-5 text-emerald-500 group-hover:text-emerald-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -181,10 +181,10 @@
           <p class="text-xs text-gray-500 dark:text-gray-400 mb-3 text-center">Credenciais de Demonstração</p>
           <div class="text-xs text-gray-600 dark:text-gray-300 space-y-2">
             <div class="p-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
-              <strong class="text-indigo-600 dark:text-indigo-400">⟡ Admin:</strong> admin@loja.com / admin123
+              <strong class="text-indigo-600 dark:text-indigo-400">⟡ Admin:</strong> admin@loja.com / 123456
             </div>
             <div class="p-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
-              <strong class="text-purple-600 dark:text-purple-400">◊ Cliente:</strong> cliente@loja.com / cliente123
+              <strong class="text-purple-600 dark:text-purple-400">◊ Cliente:</strong> cliente@teste.com / 123456
             </div>
           </div>
         </div>
@@ -194,7 +194,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch, nextTick } from 'vue'
 import { useAuth, type User } from '@/composables/useAuth'
 import { useSidebar } from '@/composables/useSidebar'
 
@@ -210,9 +210,10 @@ const loginForm = reactive({
   password: ''
 })
 
+// Usar as mesmas credenciais do sistema principal
 const validCredentials = {
-  'admin@loja.com': { password: 'admin123', role: 'admin' as const, name: 'Mestre Administrador' },
-  'cliente@loja.com': { password: 'cliente123', role: 'customer' as const, name: 'Viajante Místico' }
+  'admin@loja.com': { password: '123456', role: 'admin' as const, name: 'Admin Master' },
+  'cliente@teste.com': { password: '123456', role: 'customer' as const, name: 'Cliente Teste' }
 }
 
 const closeLoginModal = () => {
@@ -222,39 +223,67 @@ const closeLoginModal = () => {
   loginError.value = ''
 }
 
+// Usar a mesma lógica de autenticação do sistema principal
+const authenticateUser = async (email: string, password: string): Promise<User | null> => {
+  // Simular delay de API
+  await new Promise(resolve => setTimeout(resolve, 1000))
+
+  // Usuários de exemplo (mesmos da página de login)
+  const users = {
+    admin: {
+      id: '1',
+      name: 'Admin Master',
+      email: 'admin@loja.com',
+      role: 'admin' as const,
+      permissions: ['dashboard.view', 'users.manage', 'products.manage', 'orders.manage'],
+      avatar: '/avatars/admin.svg'
+    },
+    customer: {
+      id: '2',
+      name: 'Cliente Teste',
+      email: 'cliente@teste.com',
+      role: 'customer' as const,
+      permissions: ['profile.view', 'orders.view'],
+      avatar: '/avatars/customer.svg'
+    }
+  }
+
+  // Verificação simples para demo (mesma lógica do login principal)
+  if (email === 'admin@loja.com' && password === '123456') {
+    return users.admin
+  }
+  
+  if (email === 'cliente@teste.com' && password === '123456') {
+    return users.customer
+  }
+
+  return null
+}
+
 const handleLogin = async () => {
   isLoggingIn.value = true
   loginError.value = ''
   
   try {
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    const authenticatedUser = await authenticateUser(loginForm.email, loginForm.password)
     
-    const credentials = validCredentials[loginForm.email as keyof typeof validCredentials]
-    
-    if (!credentials) {
-      loginError.value = 'Email não encontrado nos registros místicos'
-      return
+    if (authenticatedUser) {
+      login(authenticatedUser, false) // Usar o composable useAuth
+      closeLoginModal()
+      
+      // Forçar sincronização
+      await nextTick()
+      if (process.client) {
+        window.dispatchEvent(new CustomEvent('auth-sync', { 
+          detail: { isLoggedIn: true, user: authenticatedUser } 
+        }))
+      }
+    } else {
+      loginError.value = 'Email ou senha incorretos'
     }
-    
-    if (credentials.password !== loginForm.password) {
-      loginError.value = 'Senha incorreta. As energias não se alinham'
-      return
-    }
-    
-    const loggedUser: User = {
-      id: `${credentials.role}-${Date.now()}`,
-      name: credentials.name,
-      email: loginForm.email,
-      role: credentials.role,
-      permissions: credentials.role === 'admin' ? ['read', 'write', 'delete'] : ['read'],
-      avatar: undefined
-    }
-    
-    login(loggedUser)
-    closeLoginModal()
-    
   } catch (error) {
-    loginError.value = 'Erro místico durante a conexão. Tente novamente.'
+    console.error('Erro no login:', error)
+    loginError.value = 'Erro interno do servidor. Tente novamente.'
   } finally {
     isLoggingIn.value = false
   }
@@ -262,5 +291,25 @@ const handleLogin = async () => {
 
 const logout = () => {
   authLogout()
+  
+  // Forçar sincronização
+  nextTick().then(() => {
+    if (process.client) {
+      window.dispatchEvent(new CustomEvent('auth-sync', { 
+        detail: { isLoggedIn: false, user: null } 
+      }))
+    }
+  })
 }
+
+// Forçar re-renderização quando o estado de autenticação mudar
+watch(isLoggedIn, async (newValue) => {
+  await nextTick()
+  // Forçar atualização da UI se necessário
+}, { immediate: true })
+
+watch(user, async (newValue) => {
+  await nextTick()
+  // Forçar atualização da UI se necessário
+}, { immediate: true, deep: true })
 </script>

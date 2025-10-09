@@ -329,7 +329,7 @@ const registerUser = async (userData: typeof form): Promise<User | null> => {
     permissions: userData.userType === 'admin' 
       ? ['dashboard.view', 'users.manage', 'products.manage', 'orders.manage']
       : ['profile.view', 'orders.view'],
-    avatar: `/avatars/${userData.userType}.jpg`
+    avatar: `/avatars/${userData.userType}.svg`
   }
 
   return newUser

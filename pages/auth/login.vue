@@ -199,7 +199,7 @@ const authenticateUser = async (email: string, password: string, userType: 'cust
       email: 'admin@loja.com',
       role: 'admin' as const,
       permissions: ['dashboard.view', 'users.manage', 'products.manage', 'orders.manage'],
-      avatar: '/avatars/admin.jpg'
+      avatar: '/avatars/admin.svg'
     },
     customer: {
       id: '2',
@@ -207,7 +207,7 @@ const authenticateUser = async (email: string, password: string, userType: 'cust
       email: 'cliente@teste.com',
       role: 'customer' as const,
       permissions: ['profile.view', 'orders.view'],
-      avatar: '/avatars/customer.jpg'
+      avatar: '/avatars/customer.svg'
     }
   }
 

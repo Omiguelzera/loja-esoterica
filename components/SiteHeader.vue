@@ -73,7 +73,7 @@
             :class="{ 'magic-glow': showUserMenu }"
           >
             <img
-              :src="user?.avatar || '/avatars/default.jpg'"
+              :src="user?.avatar || '/avatars/default.svg'"
               :alt="user?.name"
               class="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover border border-purple-400"
             />
@@ -144,7 +144,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
 import { useI18n } from '@/composables/useI18n'
@@ -173,6 +173,14 @@ const handleLogout = async () => {
   logout()
   showUserMenu.value = false
   
+  // Forçar sincronização
+  await nextTick()
+  if (process.client) {
+    window.dispatchEvent(new CustomEvent('auth-sync', { 
+      detail: { isLoggedIn: false, user: null } 
+    }))
+  }
+  
   showSuccessToast(
     'Logout realizado',
     'Você foi desconectado com sucesso'
@@ -196,4 +204,18 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
 })
+
+// Forçar re-renderização quando o estado de autenticação mudar
+watch(isLoggedIn, async (newValue) => {
+  await nextTick()
+  // Fechar menu do usuário se fez logout
+  if (!newValue) {
+    showUserMenu.value = false
+  }
+}, { immediate: true })
+
+watch(user, async (newValue) => {
+  await nextTick()
+  // Forçar atualização da UI se necessário
+}, { immediate: true, deep: true })
 </script>

@@ -6,7 +6,7 @@
         <div class="flex items-center space-x-4">
           <div class="relative">
             <img
-              :src="user?.avatar || '/avatars/admin.jpg'"
+              :src="user?.avatar || '/avatars/admin.svg'"
               :alt="user?.name"
               class="w-16 h-16 rounded-full object-cover elegant-border"
             />
