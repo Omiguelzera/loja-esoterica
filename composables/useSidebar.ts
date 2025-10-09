@@ -1,51 +1,83 @@
-import { ref, readonly, onMounted, onUnmounted } from 'vue'
+import { ref, readonly, onMounted, onUnmounted, computed } from 'vue'
+
+// Definição de breakpoints para consistência
+const breakpoints = {
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+  '2xl': 1536,
+}
 
 export const useSidebar = () => {
-  // Largura do sidebar baseada no tamanho da tela
-  const sidebarWidth = ref('16rem') // 256px - largura padrão
-  
-  // Detectar tamanho da tela e ajustar largura do sidebar
-  const updateSidebarWidth = () => {
+  // --- ESTADO REATIVO ---
+  const isCollapsed = ref(false)
+  const isMobile = ref(false)
+  const screenWidth = ref(process.client ? window.innerWidth : 0)
+
+  // --- LÓGICA DE ATUALIZAÇÃO ---
+  const updateState = () => {
     if (process.client) {
-      const width = window.innerWidth
+      screenWidth.value = window.innerWidth
+      isMobile.value = screenWidth.value < breakpoints.lg // Considera 'mobile' abaixo de 1024px
       
-      if (width < 480) {
-        // Mobile muito pequeno
-        sidebarWidth.value = '12rem' // 192px
-      } else if (width < 640) {
-        // Mobile pequeno
-        sidebarWidth.value = '13rem' // 208px
-      } else if (width < 768) {
-        // Mobile médio
-        sidebarWidth.value = '14rem' // 224px
-      } else if (width < 1024) {
-        // Tablet
-        sidebarWidth.value = '16rem' // 256px
-      } else if (width < 1280) {
-        // Desktop pequeno
-        sidebarWidth.value = '18rem' // 288px
-      } else if (width < 1536) {
-        // Desktop médio
-        sidebarWidth.value = '20rem' // 320px
-      } else {
-        // Desktop grande
-        sidebarWidth.value = '22rem' // 352px
+      // Recolhe a sidebar automaticamente em telas móveis
+      if (isMobile.value) {
+        isCollapsed.value = true
       }
     }
   }
-  
-  onMounted(() => {
-    updateSidebarWidth()
-    window.addEventListener('resize', updateSidebarWidth)
-  })
-  
-  onUnmounted(() => {
-    if (process.client) {
-      window.removeEventListener('resize', updateSidebarWidth)
+
+  // --- FUNÇÕES DE CONTROLE ---
+  const toggle = () => {
+    isCollapsed.value = !isCollapsed.value
+  }
+
+  // --- PROPRIEDADES COMPUTADAS ---
+  const sidebarWidth = computed(() => {
+    if (isCollapsed.value && isMobile.value) {
+      return '0px' // Totalmente recolhido em mobile
+    }
+    if (isMobile.value) {
+      return '16rem' // Largura fixa quando aberto em mobile
+    }
+    // Lógica responsiva para desktop
+    if (screenWidth.value < breakpoints.xl) {
+      return '16rem' // 256px
+    } else if (screenWidth.value < breakpoints['2xl']) {
+      return '18rem' // 288px
+    } else {
+      return '20rem' // 320px
     }
   })
-  
+
+  const contentMarginLeft = computed(() => {
+    if (isMobile.value) {
+      return '0px' // Conteúdo ocupa a tela toda em mobile
+    }
+    return isCollapsed.value ? '0px' : sidebarWidth.value
+  })
+
+  // --- CICLO DE VIDA ---
+  onMounted(() => {
+    if (process.client) {
+      updateState()
+      window.addEventListener('resize', updateState)
+    }
+  })
+
+  onUnmounted(() => {
+    if (process.client) {
+      window.removeEventListener('resize', updateState)
+    }
+  })
+
+  // --- EXPORTAÇÕES ---
   return {
-    sidebarWidth: readonly(sidebarWidth)
+    isCollapsed: readonly(isCollapsed),
+    isMobile: readonly(isMobile),
+    sidebarWidth,
+    contentMarginLeft,
+    toggle,
   }
 }

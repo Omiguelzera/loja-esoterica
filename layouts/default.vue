@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen magic-gradient relative overflow-hidden">
+  <div class="min-h-screen magic-gradient relative overflow-x-hidden">
     <!-- Fundo Místico -->
     <div class="absolute inset-0 opacity-30">
       <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/20 via-purple-900/20 to-cyan-900/20"></div>
@@ -11,23 +11,15 @@
     
     <SiteHeader />
     
-    <!-- Sidebar -->
     <PersistentSidebar />
     
-    <!-- Main Content -->
+    <!-- Conteúdo Principal -->
     <main 
-      class="transition-all duration-500 ease-in-out relative z-10"
-      :style="{
-        marginLeft: sidebarWidth,
-        minHeight: '100vh',
-        paddingTop: '1rem',
-        paddingRight: '0.5rem',
-        paddingBottom: '2rem',
-        paddingLeft: '0.5rem'
-      }"
+      class="transition-all duration-300 ease-in-out relative z-10"
+      :style="{ marginLeft: contentMarginLeft }"
     >
-      <div class="container mx-auto px-2 sm:px-4 md:px-6 lg:px-8 max-w-7xl">
-        <div class="mystic-card magic-glow min-h-[calc(100vh-8rem)] p-4 sm:p-6 lg:p-8 mt-4">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mystic-card magic-glow min-h-[calc(100vh-8rem)] p-4 sm:p-6 lg:p-8">
           <slot />
         </div>
       </div>
@@ -38,5 +30,5 @@
 <script setup lang="ts">
 import { useSidebar } from '@/composables/useSidebar';
 
-const { sidebarWidth } = useSidebar()
+const { contentMarginLeft } = useSidebar()
 </script>
