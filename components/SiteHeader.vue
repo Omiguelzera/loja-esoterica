@@ -197,7 +197,6 @@
 </template>
 
 <script setup lang="ts">
-<script setup lang="ts">
 import { computed, ref, reactive, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { validateDemoLoginForm, authenticateUser } from '@/composables/useAuthDemo'
 
