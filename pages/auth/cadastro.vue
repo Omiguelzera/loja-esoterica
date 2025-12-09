@@ -7,7 +7,7 @@
         </h2>
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
           Ou
-          <NuxtLink to="/auth/login" class="font-medium text-primary-600 hover:text-primary-500 transition-colors">
+          <NuxtLink :to="{ path: '/', query: { openLogin: '1' } }" class="font-medium text-primary-600 hover:text-primary-500 transition-colors">
             fazer login na sua conta
           </NuxtLink>
         </p>

@@ -21,7 +21,7 @@
         Você precisa fazer login para acessar sua conta
       </p>
       <div class="space-x-4">
-        <NuxtLink to="/auth/login" class="mystic-button">
+        <NuxtLink :to="{ path: '/', query: { openLogin: '1' } }" class="mystic-button">
           Fazer Login
         </NuxtLink>
         <NuxtLink to="/auth/cadastro" class="mystic-button-outline">

@@ -207,53 +207,23 @@ const authenticateUser = async (email: string, password: string, userType: 'cust
       email: 'cliente@teste.com',
       role: 'customer' as const,
       permissions: ['profile.view', 'orders.view'],
-      avatar: '/avatars/customer.svg'
-    }
-  }
+      <template>
+        <div />
+      </template>
 
-  // Verificação simples para demo
-  if (userType === 'admin' && email === 'admin@loja.com' && password === '123456') {
-    return users.admin
-  }
-  
-  if (userType === 'customer' && email === 'cliente@teste.com' && password === '123456') {
-    return users.customer
-  }
+      <script setup lang="ts">
+      import { onMounted } from 'vue'
+      import { useRouter } from 'vue-router'
 
-  return null
-}
+      // This page now acts as a compatibility route for deep-links to /auth/login.
+      // It will open the header modal (via `open-login-modal` event) and redirect to `/`.
+      const router = useRouter()
 
-// Handler do formulário
-const handleLogin = async () => {
-  if (!validateForm()) return
-
-  loading.value = true
-
-  try {
-    const user = await authenticateUser(form.email, form.password, form.userType)
-    
-    if (user) {
-      login(user, form.rememberMe)
-      
-      showSuccessToast(
-        'Login realizado!',
-        `Bem-vindo${user.role === 'admin' ? ' ao painel administrativo' : ''}, ${user.name}!`
-      )
-
-      // Redirecionar baseado no tipo de usuário
-      if (user.role === 'admin') {
-        await router.push('/dashboard')
-      } else {
-        await router.push('/')
-      }
-    } else {
-      generalError.value = 'Email, senha ou tipo de usuário incorretos'
-    }
-  } catch (error) {
-    console.error('Erro no login:', error)
-    generalError.value = 'Erro interno do servidor. Tente novamente.'
-  } finally {
-    loading.value = false
-  }
-}
-</script>
+      onMounted(() => {
+        if (process.client) {
+          window.dispatchEvent(new Event('open-login-modal'))
+        }
+        // Replace history to root so that URL doesn't remain on /auth/login
+        router.replace({ path: '/', query: { openLogin: '1' } })
+      })
+      </script>

@@ -130,28 +130,88 @@
         </div>
 
         <!-- Botão de login (se não estiver logado) -->
-        <NuxtLink v-else 
-                  to="/auth/login"
-                  class="crystal-border magic-glow-hover flex items-center space-x-2 px-2 sm:px-3 py-1 sm:py-2 rounded-lg transition-all duration-300 group">
+        <button v-else
+                @click="showLoginModal = true"
+                class="crystal-border magic-glow-hover flex items-center space-x-2 px-2 sm:px-3 py-1 sm:py-2 rounded-lg transition-all duration-300 group">
           <Icon name="heroicons:user-circle" class="h-4 w-4 text-purple-400 group-hover:text-purple-300" />
           <span class="hidden sm:inline text-xs sm:text-sm font-medium text-slate-200 group-hover:text-white">
             Entrar
           </span>
-        </NuxtLink>
+        </button>
       </div>
     </div>
   </header>
+
+  <!-- Login Modal -->
+  <div v-if="showLoginModal" class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+          <span class="text-indigo-500">⟡</span>
+          Portal de Entrada
+        </h3>
+        <button @click="closeLoginModal" class="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <form @submit.prevent="handleLogin" class="space-y-4">
+        <div>
+          <label for="header-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+          <input id="header-email" v-model="form.email" type="email" required class="w-full mystic-input" placeholder="seu@email.com" />
+        </div>
+
+        <div>
+          <label for="header-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Senha</label>
+          <div class="relative">
+            <input id="header-password" v-model="form.password" :type="showPassword ? 'text' : 'password'" required class="w-full mystic-input pr-10" placeholder="••••••••" />
+            <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+              <Icon :name="showPassword ? 'heroicons:eye-slash' : 'heroicons:eye'" class="h-5 w-5 text-gray-400" />
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center space-x-4">
+          <label class="flex items-center">
+            <input v-model="form.userType" type="radio" value="customer" class="mr-2" />
+            <span class="text-sm text-gray-700 dark:text-gray-300">Cliente</span>
+          </label>
+          <label class="flex items-center">
+            <input v-model="form.userType" type="radio" value="admin" class="mr-2" />
+            <span class="text-sm text-gray-700 dark:text-gray-300">Administrador</span>
+          </label>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <label class="flex items-center">
+            <input v-model="form.rememberMe" type="checkbox" class="mr-2" />
+            <span class="text-sm text-gray-700 dark:text-gray-300">Lembrar de mim</span>
+          </label>
+        </div>
+
+        <div>
+          <button type="submit" :disabled="loading" class="mystic-button w-full flex justify-center py-3 px-4 rounded-md text-sm font-medium text-white" :class="{'opacity-50 cursor-not-allowed': loading}">
+            <Icon v-if="loading" name="heroicons:arrow-path" class="animate-spin h-5 w-5 mr-2" />
+            {{ loading ? 'Entrando...' : 'Entrar' }}
+          </button>
+        </div>
+      </form>
+
+      <div v-if="generalError" class="mt-4 rounded-md bg-red-50 p-3 text-sm text-red-700">{{ generalError }}</div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, ref, reactive, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
 import { useI18n } from '@/composables/useI18n'
 import { useTheme } from '@/composables/useTheme'
 import { useSidebar } from '@/composables/useSidebar'
 import { useAuth } from '@/composables/useAuth'
 import { useToasts } from '@/composables/useToasts'
+import { authenticateUser, validateDemoLoginForm } from '@/composables/useAuthDemo'
 
 const router = useRouter()
 const cart = useCartStore()
@@ -159,8 +219,61 @@ const totalItems = computed(() => cart.totalItems)
 const { t, locale, setLocale } = useI18n()
 const { isDark, toggleTheme } = useTheme()
 const { sidebarWidth } = useSidebar()
-const { isLoggedIn, user, logout } = useAuth()
-const { success: showSuccessToast } = useToasts()
+const { isLoggedIn, user, login, logout } = useAuth()
+const { success: showSuccessToast, error: showErrorToast } = useToasts()
+
+// Login modal state
+const showLoginModal = ref(false)
+const form = reactive({
+  email: '',
+  password: '',
+  userType: 'customer' as 'customer' | 'admin',
+  rememberMe: false
+})
+const loading = ref(false)
+const showPassword = ref(false)
+const generalError = ref('')
+
+const closeLoginModal = () => {
+  showLoginModal.value = false
+  form.email = ''
+  form.password = ''
+  form.rememberMe = false
+  generalError.value = ''
+  loading.value = false
+  showPassword.value = false
+}
+
+const validateForm = () => {
+  const err = validateDemoLoginForm(form.email, form.password)
+  generalError.value = err
+  return err === ''
+}
+
+const handleLogin = async () => {
+  if (!validateForm()) return
+  loading.value = true
+
+  try {
+    const authenticated = await authenticateUser(form.email, form.password, form.userType as 'customer' | 'admin')
+    if (authenticated) {
+      login(authenticated, form.rememberMe)
+      showSuccessToast('Login realizado', `Bem-vindo, ${authenticated.name}`)
+      closeLoginModal()
+      // Redirect based on role
+      if (authenticated.role === 'admin') await router.push('/dashboard')
+      else await router.push('/')
+    } else {
+      generalError.value = 'Email, senha ou tipo de usuário incorretos'
+    }
+  } catch (err) {
+    console.error('Header login error', err)
+    showErrorToast('Erro', 'Erro ao efetuar login')
+    generalError.value = 'Internal error'
+  } finally {
+    loading.value = false
+  }
+}
 
 // Estado local
 const showUserMenu = ref(false)
@@ -199,6 +312,26 @@ const handleClickOutside = (event: Event) => {
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
+})
+
+// Listen for external requests to open the login modal (route query or custom event)
+const route = useRoute()
+const openLoginFromQuery = () => {
+  if (process.client && route.query?.openLogin) {
+    showLoginModal.value = true
+    // remove query param without reloading
+    const { openLogin, ...rest } = route.query as Record<string, any>
+    router.replace({ path: route.path, query: rest })
+  }
+}
+
+const handleOpenLoginEvent = () => {
+  showLoginModal.value = true
+}
+
+onMounted(() => {
+  openLoginFromQuery()
+  if (process.client) window.addEventListener('open-login-modal', handleOpenLoginEvent)
 })
 
 onUnmounted(() => {

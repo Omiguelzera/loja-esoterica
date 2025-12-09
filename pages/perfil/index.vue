@@ -253,7 +253,7 @@ const handleLogout = async () => {
     'Você foi desconectado com sucesso'
   )
   
-  await router.push('/auth/login')
+  await router.push({ path: '/', query: { openLogin: '1' } })
 }
 
 // Atualizar título da página
