@@ -1,16 +1,11 @@
 <template>
   <header 
-    class="crystal-border-dark magic-gradient-dark sticky top-0 z-[60] transition-all duration-500 ease-in-out magic-glow"
-    :style="{ 
-      marginLeft: sidebarWidth,
-      background: 'linear-gradient(90deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%)',
-      backdropFilter: 'blur(25px)',
-      borderImage: 'linear-gradient(90deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3), rgba(6, 182, 212, 0.3)) 1'
-    }"
+    class="header-mystic sticky top-0 z-[60] transition-all duration-500 ease-in-out magic-glow"
+    :style="{ marginLeft: sidebarWidth }"
   >
     <div class="container mx-auto flex items-center h-14 sm:h-16 lg:h-18 gap-2 sm:gap-4 px-3 sm:px-6">
       <NuxtLink to="/" class="mystic-link font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 rounded-xl px-2 py-1 crystal-border magic-glow-hover">
-        <span class="text-base sm:text-lg lg:text-xl text-white" style="text-shadow: 0 0 15px rgba(139, 92, 246, 0.8);">
+        <span class="text-base sm:text-lg lg:text-xl text-white text-glow-purple">
           🔮 {{ t('storeName') }}
         </span>
       </NuxtLink>
@@ -87,8 +82,7 @@
 
           <!-- Dropdown menu -->
           <div v-if="showUserMenu" 
-               class="absolute right-0 mt-2 w-48 crystal-border rounded-lg shadow-lg py-2 z-50"
-               style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%); backdrop-filter: blur(15px);">
+               class="absolute right-0 mt-2 w-48 crystal-border rounded-lg shadow-lg py-2 z-50 dropdown-mystic">
             <NuxtLink to="/minha-conta" 
                       @click="showUserMenu = false"
                       class="flex items-center px-4 py-2 text-sm text-slate-200 hover:text-white hover:magic-glow transition-all">
@@ -203,15 +197,9 @@
 </template>
 
 <script setup lang="ts">
+<script setup lang="ts">
 import { computed, ref, reactive, onMounted, onUnmounted, watch, nextTick } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { useCartStore } from '@/stores/cart'
-import { useI18n } from '@/composables/useI18n'
-import { useTheme } from '@/composables/useTheme'
-import { useSidebar } from '@/composables/useSidebar'
-import { useAuth } from '@/composables/useAuth'
-import { useToasts } from '@/composables/useToasts'
-import { authenticateUser, validateDemoLoginForm } from '@/composables/useAuthDemo'
+import { validateDemoLoginForm, authenticateUser } from '@/composables/useAuthDemo'
 
 const router = useRouter()
 const cart = useCartStore()

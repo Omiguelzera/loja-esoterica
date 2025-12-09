@@ -30,14 +30,14 @@
       </div>
       <div v-if="pending" class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         <div v-for="n in 8" :key="n" class="rounded-lg border border-border bg-card p-0 overflow-hidden flex flex-col">
-          <div class="aspect-video bg-muted/30 animate-pulse" />
+          <Skeleton class="aspect-video w-full rounded-none" />
           <div class="p-4 space-y-3">
-            <div class="h-4 w-3/4 bg-muted/40 rounded animate-pulse" />
-            <div class="h-3 w-full bg-muted/30 rounded animate-pulse" />
-            <div class="h-3 w-5/6 bg-muted/20 rounded animate-pulse" />
+            <Skeleton class="h-4 w-3/4" />
+            <Skeleton class="h-3 w-full" />
+            <Skeleton class="h-3 w-5/6" />
             <div class="flex items-center justify-between pt-2">
-              <div class="h-4 w-16 bg-muted/30 rounded animate-pulse" />
-              <div class="h-3 w-12 bg-muted/20 rounded animate-pulse" />
+              <Skeleton class="h-4 w-16" />
+              <Skeleton class="h-3 w-12" />
             </div>
           </div>
         </div>
