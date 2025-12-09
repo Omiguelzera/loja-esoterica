@@ -1,4 +1,4 @@
-import { ref, readonly, onMounted, computed } from 'vue'
+import { ref, readonly, onMounted, onUnmounted, computed } from 'vue'
 
 export interface User {
   id: string
@@ -9,9 +9,14 @@ export interface User {
   avatar?: string
 }
 
+// Estado global compartilhado entre todas as instâncias
+const globalIsLoggedIn = ref(false)
+const globalUser = ref<User | null>(null)
+
 export const useAuth = () => {
-  const isLoggedIn = ref(false)
-  const user = ref<User | null>(null)
+  // Usar referências globais em vez de locais
+  const isLoggedIn = globalIsLoggedIn
+  const user = globalUser
 
   // Verificar se usuário está logado
   const checkAuth = () => {
@@ -42,7 +47,7 @@ export const useAuth = () => {
     return false
   }
 
-  // Função de login melhorada
+  // Função de login melhorada com notificação global
   const login = (userData: User, rememberMe = false) => {
     user.value = userData
     isLoggedIn.value = true
@@ -61,9 +66,16 @@ export const useAuth = () => {
     otherStorage.removeItem('isLoggedIn')
     otherStorage.removeItem('loginTimestamp')
     otherStorage.removeItem('rememberMe')
+    
+    // Disparar evento customizado para sincronização
+    if (process.client) {
+      window.dispatchEvent(new CustomEvent('auth-changed', { 
+        detail: { isLoggedIn: true, user: userData } 
+      }))
+    }
   }
 
-  // Função de logout melhorada
+  // Função de logout melhorada com notificação global
   const logout = () => {
     isLoggedIn.value = false
     user.value = null
@@ -74,6 +86,13 @@ export const useAuth = () => {
       localStorage.removeItem(key)
       sessionStorage.removeItem(key)
     })
+    
+    // Disparar evento customizado para sincronização
+    if (process.client) {
+      window.dispatchEvent(new CustomEvent('auth-changed', { 
+        detail: { isLoggedIn: false, user: null } 
+      }))
+    }
   }
 
   // Verificar se usuário é admin
@@ -96,9 +115,57 @@ export const useAuth = () => {
     return isAdmin.value && hasPermission('dashboard.view')
   })
 
+  // Forçar sincronização imediata
+  const forceSync = () => {
+    checkAuth()
+    if (process.client) {
+      window.dispatchEvent(new CustomEvent('auth-sync', { 
+        detail: { isLoggedIn: isLoggedIn.value, user: user.value } 
+      }))
+    }
+  }
+
+  // Listener para sincronização entre abas/janelas e componentes
+  const handleStorageChange = (event: StorageEvent) => {
+    if (event.key === 'isLoggedIn' || event.key === 'user') {
+      // Recarregar estado de autenticação quando houver mudanças
+      checkAuth()
+    }
+  }
+
+  // Listener para eventos customizados de autenticação
+  const handleAuthChange = (event: CustomEvent) => {
+    const { isLoggedIn: newIsLoggedIn, user: newUser } = event.detail
+    isLoggedIn.value = newIsLoggedIn
+    user.value = newUser
+  }
+
+  // Listener para sync forçado
+  const handleAuthSync = (event: CustomEvent) => {
+    const { isLoggedIn: newIsLoggedIn, user: newUser } = event.detail
+    isLoggedIn.value = newIsLoggedIn
+    user.value = newUser
+  }
+
   // Verificar autenticação ao inicializar
   onMounted(() => {
     checkAuth()
+    
+    // Adicionar listeners para sincronização
+    if (process.client) {
+      window.addEventListener('storage', handleStorageChange)
+      window.addEventListener('auth-changed', handleAuthChange as EventListener)
+      window.addEventListener('auth-sync', handleAuthSync as EventListener)
+    }
+  })
+
+  // Limpar listeners ao desmontar
+  onUnmounted(() => {
+    if (process.client) {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('auth-changed', handleAuthChange as EventListener)
+      window.removeEventListener('auth-sync', handleAuthSync as EventListener)
+    }
   })
 
   return {
@@ -110,6 +177,7 @@ export const useAuth = () => {
     login,
     logout,
     checkAuth,
-    hasPermission
+    hasPermission,
+    forceSync
   }
 }

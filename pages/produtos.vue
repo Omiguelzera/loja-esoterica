@@ -36,8 +36,18 @@
       </div>
 
       <!-- Loading -->
-      <div v-if="pending" class="flex justify-center items-center py-12">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div v-if="pending" class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div v-for="n in 8" :key="n" class="rounded-lg border border-border bg-card p-0 overflow-hidden flex flex-col">
+          <Skeleton class="aspect-video w-full rounded-none" />
+          <div class="p-4 space-y-3">
+            <Skeleton class="h-4 w-3/4" />
+            <Skeleton class="h-3 w-full" />
+            <div class="flex items-center justify-between pt-2">
+              <Skeleton class="h-4 w-16" />
+              <Skeleton class="h-3 w-12" />
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Erro -->
