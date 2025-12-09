@@ -10,7 +10,7 @@
           Atualize suas informações pessoais
         </p>
       </div>
-      <NuxtLink to="/perfil" 
+      <NuxtLink to="/minha-conta" 
                 class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
         <Icon name="heroicons:x-mark" class="h-6 w-6" />
       </NuxtLink>
@@ -226,7 +226,7 @@
 
         <!-- Botões -->
         <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-          <NuxtLink to="/perfil" 
+          <NuxtLink to="/minha-conta" 
                     class="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 rounded-md transition-colors">
             Cancelar
           </NuxtLink>

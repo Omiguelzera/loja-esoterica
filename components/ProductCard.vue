@@ -1,6 +1,6 @@
 <template>
   <div class="rounded-lg border border-border overflow-hidden bg-card hover:shadow-lg transition shadow-sm flex flex-col h-full">
-    <NuxtLink :to="`/produto/${product.id}`" class="group flex-1 flex flex-col">
+    <NuxtLink :to="`/produtos/${product.id}`" class="group flex-1 flex flex-col">
       <div class="aspect-video relative overflow-hidden bg-muted">
         <img 
           v-if="product.imageUrl" 

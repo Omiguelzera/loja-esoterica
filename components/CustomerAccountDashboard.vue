@@ -124,7 +124,7 @@
             </div>
           </NuxtLink>
 
-          <NuxtLink to="/perfil/editar" 
+          <NuxtLink to="/minha-conta/editar" 
                     class="flex items-center p-4 elegant-border rounded-lg hover:magic-glow transition-all group">
             <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700 group-hover:bg-gray-200 dark:group-hover:bg-gray-600 transition-colors mr-3">
               <Icon name="heroicons:user-circle" class="h-5 w-5 text-gray-600 dark:text-gray-300" />

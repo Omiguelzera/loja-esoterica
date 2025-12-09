@@ -106,7 +106,7 @@
               Dashboard Admin
             </NuxtLink>
             
-            <NuxtLink to="/perfil/editar" 
+            <NuxtLink to="/minha-conta/editar" 
                       @click="showUserMenu = false"
                       class="flex items-center px-4 py-2 text-sm text-slate-200 hover:text-white hover:magic-glow transition-all">
               <Icon name="heroicons:cog-6-tooth" class="h-4 w-4 mr-3 text-gray-400" />
