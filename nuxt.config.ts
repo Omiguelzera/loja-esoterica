@@ -31,7 +31,7 @@ export default defineNuxtConfig({
   ],
   components: [
     { path: '~/components/ui', prefix: '' },
-    { path: '~/components', prefix: '' }
+    { path: '~/components', prefix: '', global: true }
   ],
   postcss: {
     plugins: {
