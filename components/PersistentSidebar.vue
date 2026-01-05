@@ -53,7 +53,7 @@
           </h3>
           <nav class="space-y-2 mb-6">
             <NuxtLink 
-              to="/minha-conta" 
+              to="/dashboard" 
               class="elegant-border flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-xl group hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
               <svg class="w-5 h-5 text-emerald-500 group-hover:text-emerald-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
